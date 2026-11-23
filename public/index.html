@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dockyard – project boards for small teams</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Auth -->
+  <main id="auth-view" class="auth" hidden>
+    <section class="auth-card">
+      <h1>Dockyard</h1>
+      <p class="tagline">Plan the work, hand it out, and watch it move across the board.</p>
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-mode="login" role="tab">Log in</button>
+        <button class="tab" data-mode="register" role="tab">Create account</button>
+      </div>
+      <form id="auth-form">
+        <label id="name-field" hidden>Name
+          <input name="name" autocomplete="name" />
+        </label>
+        <label>Email
+          <input name="email" type="email" autocomplete="email" required />
+        </label>
+        <label>Password
+          <input name="password" type="password" autocomplete="current-password" minlength="6" required />
+        </label>
+        <p id="auth-error" class="error" role="alert"></p>
+        <button class="btn primary" id="auth-submit" type="submit">Log in</button>
+      </form>
+    </section>
+  </main>
+
+  <!-- App -->
+  <div id="app-view" class="app" hidden>
+    <aside class="sidebar">
+      <div class="brand">Dockyard</div>
+      <nav>
+        <h2>Your projects</h2>
+        <ul id="project-list" class="project-list"></ul>
+        <form id="new-project-form" class="stack">
+          <input name="name" placeholder="New project name" required />
+          <button class="btn" type="submit">Create project</button>
+        </form>
+      </nav>
+      <div class="me">
+        <span id="me-name"></span>
+        <button class="link" id="logout">Log out</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h2 id="project-title">Pick a project</h2>
+          <p id="project-sub" class="muted"></p>
+        </div>
+        <div class="topbar-actions">
+          <div class="bell-wrap">
+            <button class="btn" id="bell" aria-haspopup="true">Notifications <span id="bell-count" class="badge" hidden>0</span></button>
+            <div id="bell-panel" class="bell-panel" hidden>
+              <div class="bell-head"><strong>Notifications</strong> <button class="link" id="mark-read">Mark all read</button></div>
+              <ul id="bell-list"></ul>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div id="empty-state" class="empty">
+        <h3>No project open</h3>
+        <p>Create a project in the sidebar, then add tasks and invite teammates.</p>
+      </div>
+
+      <section id="project-body" hidden>
+        <div class="toolbar">
+          <form id="new-task-form" class="inline-form">
+            <input name="title" placeholder="Add a task" required />
+            <button class="btn primary" type="submit">Add task</button>
+          </form>
+          <div class="members">
+            <ul id="member-list" class="chips"></ul>
+            <form id="invite-form" class="inline-form">
+              <input name="email" type="email" placeholder="Invite by email" required />
+              <button class="btn" type="submit">Invite</button>
+            </form>
+          </div>
+        </div>
+        <p id="board-error" class="error" role="alert"></p>
+        <div class="board" id="board"></div>
+        <button class="link danger" id="delete-project" hidden>Delete this project</button>
+      </section>
+    </main>
+  </div>
+
+  <!-- Task dialog -->
+  <dialog id="task-dialog">
+    <form id="task-form" class="dialog-body">
+      <input name="title" class="title-input" aria-label="Task title" required />
+      <textarea name="description" rows="3" placeholder="Add details"></textarea>
+      <div class="grid2">
+        <label>Status
+          <select name="status">
+            <option value="todo">To do</option>
+            <option value="doing">In progress</option>
+            <option value="done">Done</option>
+          </select>
+        </label>
+        <label>Assigned to
+          <select name="assignee_id"></select>
+        </label>
+        <label>Due date
+          <input name="due_date" type="date" />
+        </label>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="link danger" id="delete-task">Delete task</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn" id="close-dialog">Close</button>
+        <button type="submit" class="btn primary">Save changes</button>
+      </div>
+    </form>
+    <section class="comments">
+      <h3>Discussion</h3>
+      <ul id="comment-list"></ul>
+      <form id="comment-form" class="inline-form">
+        <input name="body" placeholder="Write a comment" required />
+        <button class="btn" type="submit">Post comment</button>
+      </form>
+    </section>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
